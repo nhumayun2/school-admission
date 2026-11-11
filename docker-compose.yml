@@ -26,5 +26,15 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  frontend:
+    build: ./frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    environment:
+      API_BASE_URL: ${API_BASE_URL:-http://localhost:8080}   # backend address as the browser sees it
+    depends_on:
+      - backend
+    restart: unless-stopped
+
 volumes:
   pgdata:
