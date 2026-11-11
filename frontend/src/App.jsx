@@ -2,21 +2,18 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Header, TabBar } from './components/Header.jsx';
 import { Dialog, Message, Toasts } from './components/ui.jsx';
 import { api, serverNow } from './lib/api.js';
-import { effectiveStatus, isValidStudentId } from './lib/format.js';
+import { effectiveStatus, isValidStudentId, plural } from './lib/format.js';
 import { CANCEL, errorTitle } from './lib/labels.js';
 import { useRoute } from './lib/useRoute.js';
 import { ApplicationView } from './views/ApplicationView.jsx';
 import { ClassesView } from './views/ClassesView.jsx';
+import { CreateClassView } from './views/CreateClassView.jsx';
 import { MyApplicationsView } from './views/MyApplicationsView.jsx';
 
 const STUDENT_KEY = 'admission.studentId';
 const POLL_MS = 3000;
 
 const TITLES = { classes: 'Classes', application: 'Application', me: 'My applications', admin: 'Create a class' };
-
-const PLACEHOLDERS = {
-  admin: { title: 'Create a class', lede: 'Each shift is its own class, with its own number of seats.' },
-};
 
 function readStudentId() {
   try {
@@ -106,8 +103,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (classesLoaded) setTimeout(() => setIntro(false), 900);
-  }, [classesLoaded]);
+    if (!classesLoaded || !intro) return undefined;
+    const t = setTimeout(() => setIntro(false), 900);
+    return () => clearTimeout(t);
+  }, [classesLoaded, intro]);
 
   const changeStudentId = useCallback(
     (value) => {
@@ -202,6 +201,17 @@ export default function App() {
       }
     },
     [refresh, toast],
+  );
+
+  const createClass = useCallback(
+    async (name, totalSeats) => {
+      const created = await api.createClass(name, totalSeats);
+      toast('ok', `Class created: ${created.name}, ${plural(created.totalSeats, 'seat', 'seats')}.`);
+      setIntro(true);
+      await refresh();
+      navigate('/');
+    },
+    [navigate, refresh, toast],
   );
 
   const openHold = useCallback((holdId) => navigate(`/applications/${holdId}`), [navigate]);
@@ -305,15 +315,7 @@ export default function App() {
       />
     );
   } else {
-    const p = PLACEHOLDERS[route.page];
-    page = (
-      <div className="head">
-        <div>
-          <h1>{p.title}</h1>
-          <p>{p.lede}</p>
-        </div>
-      </div>
-    );
+    page = <CreateClassView classes={classes} msg={pageMessage} onCreate={createClass} onNavigate={navigate} />;
   }
 
   return (
