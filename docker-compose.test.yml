@@ -1,0 +1,22 @@
+# Runs the automated tests with Docker only:
+#   docker compose -f docker-compose.test.yml run --rm backend-tests
+#   docker compose -f docker-compose.test.yml run --rm frontend-tests
+name: school-admission-tests
+
+services:
+  backend-tests:
+    image: mcr.microsoft.com/dotnet/sdk:10.0
+    volumes:
+      - ./backend:/mnt/backend:ro
+      - /var/run/docker.sock:/var/run/docker.sock   # the tests start their own PostgreSQL container
+    environment:
+      TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: sh -c "mkdir /w && cd /mnt/backend && tar cf - --exclude=bin --exclude=obj . | tar xf - -C /w && cd /w && dotnet test"
+
+  frontend-tests:
+    image: node:22-alpine
+    volumes:
+      - ./frontend:/mnt/frontend:ro
+    command: sh -c "mkdir /w && cd /mnt/frontend && tar cf - --exclude=node_modules --exclude=dist . | tar xf - -C /w && cd /w && npm ci --no-audit --no-fund && npm test"

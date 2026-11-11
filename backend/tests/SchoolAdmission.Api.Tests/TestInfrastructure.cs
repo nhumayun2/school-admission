@@ -8,7 +8,7 @@ namespace SchoolAdmission.Api.Tests;
 /// <summary>One real PostgreSQL in Docker for the whole test run. Each test creates its own classes, so tests do not collide.</summary>
 public sealed class DatabaseFixture : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder().WithImage("postgres:17-alpine").Build();
+    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder("postgres:17-alpine").Build();
 
     public string ConnectionString => _container.GetConnectionString();
 
