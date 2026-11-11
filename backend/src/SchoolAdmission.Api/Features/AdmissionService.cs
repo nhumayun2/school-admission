@@ -174,6 +174,15 @@ public sealed class AdmissionService(NpgsqlDataSource db, AdmissionSettings sett
         }
     }
 
+    /// <summary>Marks every HELD hold whose time has passed as EXPIRED; returns how many changed.</summary>
+    public async Task<int> ExpireOverdueAsync(CancellationToken ct)
+    {
+        await using var conn = await db.OpenConnectionAsync(ct);
+        return await conn.ExecuteAsync(new CommandDefinition(
+            "UPDATE holds SET status = 'EXPIRED', updated_at = now() WHERE status = 'HELD' AND expires_at <= now()",
+            cancellationToken: ct));
+    }
+
     // ---------- helpers ----------
 
     private static Task<HoldRow?> FindAsync(NpgsqlConnection conn, string holdId) =>

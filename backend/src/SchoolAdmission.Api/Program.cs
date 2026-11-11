@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton(sp => AdmissionSettings.From(sp.GetRequiredService<IConfiguration>()));
 builder.Services.AddSingleton<AdmissionService>();
+builder.Services.AddHostedService<HoldExpiryService>();
 
 // The connection string comes from configuration, so ConnectionStrings__Default in the environment overrides it.
 builder.Services.AddSingleton(sp =>
