@@ -39,3 +39,5 @@ app.MapAdmissionApi();
 app.MapFallback(() => Results.Json(new { error = "NOT_FOUND", message = "This address does not exist on the server." }, statusCode: 404));
 
 app.Run();
+
+public partial class Program; // lets the test project start the app in memory
