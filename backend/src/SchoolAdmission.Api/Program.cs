@@ -1,7 +1,12 @@
 using Npgsql;
 using SchoolAdmission.Api.Data;
+using SchoolAdmission.Api.Features;
+using SchoolAdmission.Api.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton(sp => AdmissionSettings.From(sp.GetRequiredService<IConfiguration>()));
+builder.Services.AddSingleton<AdmissionService>();
 
 // The connection string comes from configuration, so ConnectionStrings__Default in the environment overrides it.
 builder.Services.AddSingleton(sp =>
