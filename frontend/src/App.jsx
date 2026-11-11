@@ -7,6 +7,7 @@ import { CANCEL, errorTitle } from './lib/labels.js';
 import { useRoute } from './lib/useRoute.js';
 import { ApplicationView } from './views/ApplicationView.jsx';
 import { ClassesView } from './views/ClassesView.jsx';
+import { MyApplicationsView } from './views/MyApplicationsView.jsx';
 
 const STUDENT_KEY = 'admission.studentId';
 const POLL_MS = 3000;
@@ -14,7 +15,6 @@ const POLL_MS = 3000;
 const TITLES = { classes: 'Classes', application: 'Application', me: 'My applications', admin: 'Create a class' };
 
 const PLACEHOLDERS = {
-  me: { title: 'My applications', lede: 'Every application made with this birth registration number.' },
   admin: { title: 'Create a class', lede: 'Each shift is its own class, with its own number of seats.' },
 };
 
@@ -288,6 +288,19 @@ export default function App() {
         onConfirm={confirm}
         onAskCancel={setCancelId}
         onApply={apply}
+        onNavigate={navigate}
+      />
+    );
+  } else if (route.page === 'me') {
+    page = (
+      <MyApplicationsView
+        myHolds={myHolds}
+        loaded={holdsLoaded}
+        now={now}
+        studentId={studentId}
+        msg={pageMessage}
+        askId={askId}
+        onOpen={openHold}
         onNavigate={navigate}
       />
     );
