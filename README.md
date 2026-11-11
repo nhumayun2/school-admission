@@ -28,11 +28,11 @@ To start from an empty database: `docker compose down -v`.
 
 ### Trying it out
 
-1. Open http://localhost:3000 and go to **Create class**. Add a class, for example "Class 6 - Morning Shift" with 120 seats.
+1. Open http://localhost:3000 and go to Create class. Add a class, for example "Class 6 - Morning Shift" with 120 seats.
 2. Type a 17-digit birth registration number in the box at the top of the page.
-3. On **Classes**, press **আবেদন করুন**. The seat is held for 10 minutes.
-4. On the application page, press **ভর্তি ফি দিন** to confirm the admission, or **বাতিল** to cancel it.
-5. **My applications** lists every application for the number in the top box.
+3. On Classes, press আবেদন করুন. The seat is held for 10 minutes.
+4. On the application page, press ভর্তি ফি দিন to confirm the admission, or বাতিল to cancel it.
+5. My applications lists every application for the number in the top box.
 
 ### Settings
 
@@ -79,10 +79,10 @@ npm test
 
 ### What is tested
 
-- **Backend (14 tests, real PostgreSQL):** 50 students applying at once for 10 seats get exactly 10 holds;
+- Backend (14 tests, real PostgreSQL): 50 students applying at once for 10 seats get exactly 10 holds;
   two backend instances sharing one database still never over-hold; a double click gives one hold; expiry,
   confirm, cancel, ownership (`403`), input validation, data surviving a restart, and the API field names.
-- **Frontend (28 tests):** the birth registration number box, the create class form, the API client,
+- Frontend (28 tests): the birth registration number box, the create class form, the API client,
   countdown and expiry logic, and the apply, pay and "last seat taken" flows against a fake backend.
 
 ## API
